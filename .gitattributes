@@ -1,0 +1,9 @@
+.gitattributes text
+.gitignore text
+
+Cargo.toml text
+Cargo.lock text
+COPYING
+PKGBUILD
+
+*.rs text
