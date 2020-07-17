@@ -10,13 +10,13 @@ use std::process::Command;
 pub struct AMenuProvider {}
 
 impl MenuProvider for AMenuProvider {
-    fn get_file_items(&self, window: *mut GtkWidget, files: &Vec<FileInfo>) -> Vec<MenuItem> {
+    fn get_file_items(&self, _window: *mut GtkWidget, _files: &Vec<FileInfo>) -> Vec<MenuItem> {
         Vec::new()
     }
 
     fn get_background_items(
         &self,
-        window: *mut GtkWidget,
+        _window: *mut GtkWidget,
         current_folder: &FileInfo,
     ) -> Vec<MenuItem> {
         if current_folder.get_uri_scheme() != "file" {
@@ -56,5 +56,7 @@ fn terminal_nautilus_menu_item_activate(file: FileInfo) {
 }
 
 fn create_terminal(path: PathBuf) {
-    Command::new("alacritty").current_dir(path).spawn();
+    if let Err(e) = Command::new("alacritty").current_dir(path).spawn() {
+        eprintln!("Failed to start alacritty: {}", e);
+    };
 }
