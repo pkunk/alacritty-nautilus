@@ -6,6 +6,7 @@ use nautilus_extension::nautilus_menu_background_activate_cb;
 use nautilus_extension::{FileInfo, MenuItem, MenuProvider};
 use std::path::PathBuf;
 use std::process::Command;
+use std::thread;
 
 pub struct AMenuProvider {}
 
@@ -56,7 +57,12 @@ fn terminal_nautilus_menu_item_activate(file: FileInfo) {
 }
 
 fn create_terminal(path: PathBuf) {
-    if let Err(e) = Command::new("alacritty").current_dir(path).spawn() {
-        eprintln!("Failed to start alacritty: {}", e);
-    };
+    match Command::new("alacritty").current_dir(path).spawn() {
+        Ok(mut c) => {
+            thread::spawn(move || c.wait());
+        }
+        Err(e) => {
+            eprintln!("Failed to start alacritty: {}", e);
+        }
+    }
 }
